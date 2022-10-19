@@ -8,10 +8,7 @@ import com.parkit.parkingsystem.model.Ticket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Timestamp;
+import java.sql.*;
 
 public class TicketDAO {
 
@@ -86,4 +83,25 @@ public class TicketDAO {
         }
         return false;
     }
+
+    public boolean recurringUsers(String VehichleRegNumber) {
+        Connection con = null;
+        try {
+            con = dataBaseConfig.getConnection();
+            PreparedStatement ps = con.prepareStatement(DBConstants.COUNT_PASSAGE);
+            ps.setString(1,VehichleRegNumber);
+            ResultSet rs = ps.executeQuery();
+
+           if(rs.next()) {
+               return rs.getInt(1) > 1;
+           }
+            dataBaseConfig.closeResultSet(rs);
+            dataBaseConfig.closePreparedStatement(ps);
+        } catch (Exception e) {
+            logger.error("Error Recurring Users", e);
+        }
+        return false;
+    }
+
+
 }
