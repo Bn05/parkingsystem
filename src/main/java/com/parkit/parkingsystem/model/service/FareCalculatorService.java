@@ -1,10 +1,12 @@
-package com.parkit.parkingsystem.service;
+package com.parkit.parkingsystem.model.service;
 
 import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.model.Ticket;
 
 public class FareCalculatorService {
+
+    public TicketDAO ticketDAO = new TicketDAO();
 
     public void calculateFare(Ticket ticket) {
         if ((ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime()))) {
@@ -22,7 +24,7 @@ public class FareCalculatorService {
         }
 
         // Permet d'appliquer 5% de remise si client régulier.
-        TicketDAO ticketDAO = new TicketDAO();
+
         if (ticketDAO.recurringUsers(ticket.getVehicleRegNumber())) {
             duration = duration * 0.95;
         }

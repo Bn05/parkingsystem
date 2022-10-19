@@ -1,4 +1,4 @@
-package com.parkit.parkingsystem.service;
+package com.parkit.parkingsystem.model.service;
 
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
