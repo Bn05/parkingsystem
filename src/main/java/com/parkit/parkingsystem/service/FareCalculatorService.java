@@ -16,6 +16,11 @@ public class FareCalculatorService {
 
         double duration = (outHour - inHour) / 1000 / 60 / 60; // différence de temps en millisecond, ("1000/60/60) permet de mettre cette valeur en heure.
 
+        //Permet d'offrir la gratuité quand on reste moins de 30min.
+        if (duration < 0.5) {
+            duration = 0;
+        }
+
         // Permet d'appliquer 5% de remise si client régulier.
         TicketDAO ticketDAO = new TicketDAO();
         if (ticketDAO.recurringUsers(ticket.getVehicleRegNumber())) {
