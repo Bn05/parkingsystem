@@ -35,7 +35,7 @@ public class ParkingSpotDAOTest {
     }
 
     @Test
-    public void getNextAvailableSlotTest() {
+    void getNextAvailableSlotTest() {
 
         int test = parkingSpotDAO.getNextAvailableSlot(CAR);
 
@@ -43,7 +43,7 @@ public class ParkingSpotDAOTest {
     }
 
     @Test
-    public void updateParkingTest(){
+    void updateParkingTest(){
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
 
         boolean test = parkingSpotDAO.updateParking(parkingSpot);

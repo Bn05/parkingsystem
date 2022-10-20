@@ -21,7 +21,7 @@ import java.util.Date;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ParkingServiceTest {
+class ParkingServiceTest {
 
     @InjectMocks
     private static ParkingService parkingService;
@@ -58,7 +58,7 @@ public class ParkingServiceTest {
     }
 
     @Test
-    public void processIncomingVehicleTestCarTest() {
+    void processIncomingVehicleTestCarTest() {
 
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(parkingSpotDAO.getNextAvailableSlot(any())).thenReturn(1);
@@ -73,7 +73,7 @@ public class ParkingServiceTest {
     }
 
     @Test
-    public void processIncomingVehicleTestCarTicketSaveFailTest() {
+    void processIncomingVehicleTestCarTicketSaveFailTest() {
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(parkingSpotDAO.getNextAvailableSlot(any())).thenReturn(1);
         when(ticketDAO.saveTicket(any())).thenReturn(false);
@@ -87,7 +87,7 @@ public class ParkingServiceTest {
     }
 
     @Test
-    public void processIncomingVehicleTestCarRecurringUserTest() {
+    void processIncomingVehicleTestCarRecurringUserTest() {
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(parkingSpotDAO.getNextAvailableSlot(any())).thenReturn(1);
         when(ticketDAO.saveTicket(any())).thenReturn(true);
@@ -101,7 +101,7 @@ public class ParkingServiceTest {
     }
 
     @Test
-    public void processIncomingVehicleTestCarNoSlotAvailableTest() {
+    void processIncomingVehicleTestCarNoSlotAvailableTest() {
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(parkingSpotDAO.getNextAvailableSlot(any())).thenReturn(0);
 
@@ -114,7 +114,7 @@ public class ParkingServiceTest {
 
 
     @Test
-    public void processIncomingVehicleTestCarIllegalArgumentTest() {
+    void processIncomingVehicleTestCarIllegalArgumentTest() {
         when(inputReaderUtil.readSelection()).thenReturn(3);
         parkingService.processIncomingVehicle();
 
@@ -124,7 +124,7 @@ public class ParkingServiceTest {
     }
 
     @Test
-    public void processIncomingVehicleTestBikeTest() {
+    void processIncomingVehicleTestBikeTest() {
         when(inputReaderUtil.readSelection()).thenReturn(2);
         when(parkingSpotDAO.getNextAvailableSlot(any())).thenReturn(1);
         when(ticketDAO.saveTicket(any())).thenReturn(true);
@@ -139,12 +139,13 @@ public class ParkingServiceTest {
     }
 
     @Test
-    public void processExitingVehicleTest() {
+    void processExitingVehicleTest() {
         parkingService.processExitingVehicle();
         verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
     }
 
-    @Test public void processExitingVehicleUpdateTicketFailTest() {
+    @Test
+    void processExitingVehicleUpdateTicketFailTest() {
         when(ticketDAO.updateTicket(any())).thenReturn(false);
 
         parkingService.processExitingVehicle();

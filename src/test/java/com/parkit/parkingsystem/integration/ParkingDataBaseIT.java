@@ -54,7 +54,7 @@ public class ParkingDataBaseIT {
     }
 
     @Test
-    public void testParkingACar() throws Exception {
+    void testParkingACar() throws Exception {
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
         String vehicleRegNumber = inputReaderUtil.readVehicleRegistrationNumber();
@@ -66,7 +66,7 @@ public class ParkingDataBaseIT {
     }
 
     @Test
-    public void testParkingLotExit() throws Exception {
+    void testParkingLotExit() throws Exception {
         testParkingACar();
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         Thread.sleep(500);

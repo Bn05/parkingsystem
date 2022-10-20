@@ -38,7 +38,7 @@ public class TicketDAOTest {
 
 
     @Test
-    public void saveTicketTest() {
+    void saveTicketTest() {
         Ticket ticket = new Ticket();
         ticket.setParkingSpot(new ParkingSpot(1, ParkingType.CAR, false));
         ticket.setId(1);
@@ -62,7 +62,7 @@ public class TicketDAOTest {
     }
 
     @Test
-    public void saveTicketNull() {
+    void saveTicketNull() {
         Ticket ticket = new Ticket();
 
         boolean test = ticketDAO.saveTicket(ticket);
@@ -75,7 +75,7 @@ public class TicketDAOTest {
     }
 
     @Test
-    public void getTicketvehicleRegNumberNullTest() {
+    void getTicketvehicleRegNumberNullTest() {
 
         Ticket test = ticketDAO.getTicket("ABCDEF");
 
@@ -83,7 +83,7 @@ public class TicketDAOTest {
     }
 
     @Test
-    public void updateTicketTest() {
+    void updateTicketTest() {
         Ticket ticket = new Ticket();
         ticket.setParkingSpot(new ParkingSpot(1, ParkingType.CAR, false));
         ticket.setId(1);
@@ -97,7 +97,7 @@ public class TicketDAOTest {
     }
 
     @Test
-    public void updateTicketNullTest() {
+    void updateTicketNullTest() {
         Ticket ticket = new Ticket();
 
         boolean test = ticketDAO.updateTicket(ticket);
