@@ -8,8 +8,10 @@ import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.model.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -21,6 +23,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class ParkingServiceTest {
 
+    @InjectMocks
     private static ParkingService parkingService;
 
     @Mock
@@ -30,32 +33,124 @@ public class ParkingServiceTest {
     @Mock
     private static TicketDAO ticketDAO;
 
+    @Mock
+    private ParkingSpot parkingSpot;
+
     @BeforeEach
     public void setUpPerTest() {
         try {
-            when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-
-            ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
+            lenient().when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+            ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
             Ticket ticket = new Ticket();
-            ticket.setInTime(new Date(System.currentTimeMillis() - (60*60*1000)));
+            ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
             ticket.setParkingSpot(parkingSpot);
             ticket.setVehicleRegNumber("ABCDEF");
-            when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
-            when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
+            lenient().when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
+            lenient().when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
 
-            when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
+            lenient().when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
 
-            parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+
         } catch (Exception e) {
             e.printStackTrace();
-            throw  new RuntimeException("Failed to set up test mock objects");
+            throw new RuntimeException("Failed to set up test mock objects");
         }
     }
 
     @Test
-    public void processExitingVehicleTest(){
+    public void processIncomingVehicleTestCarTest() {
+
+        when(inputReaderUtil.readSelection()).thenReturn(1);
+        when(parkingSpotDAO.getNextAvailableSlot(any())).thenReturn(1);
+        when(ticketDAO.saveTicket(any())).thenReturn(true);
+        when(ticketDAO.recurringUsers(any())).thenReturn(false);
+
+        parkingService.processIncomingVehicle();
+
+        verify(parkingSpotDAO, Mockito.times(1)).updateParking(any());
+        verify(ticketDAO, Mockito.times(1)).saveTicket(any());
+        verify(ticketDAO, Mockito.times(1)).recurringUsers(any());
+    }
+
+    @Test
+    public void processIncomingVehicleTestCarTicketSaveFailTest() {
+        when(inputReaderUtil.readSelection()).thenReturn(1);
+        when(parkingSpotDAO.getNextAvailableSlot(any())).thenReturn(1);
+        when(ticketDAO.saveTicket(any())).thenReturn(false);
+
+
+        parkingService.processIncomingVehicle();
+
+        verify(parkingSpotDAO, Mockito.times(1)).updateParking(any());
+        verify(ticketDAO, Mockito.times(1)).saveTicket(any());
+        verify(ticketDAO, Mockito.times(0)).recurringUsers(any());
+    }
+
+    @Test
+    public void processIncomingVehicleTestCarRecurringUserTest() {
+        when(inputReaderUtil.readSelection()).thenReturn(1);
+        when(parkingSpotDAO.getNextAvailableSlot(any())).thenReturn(1);
+        when(ticketDAO.saveTicket(any())).thenReturn(true);
+        when(ticketDAO.recurringUsers(any())).thenReturn(true);
+
+        parkingService.processIncomingVehicle();
+
+        verify(parkingSpotDAO, Mockito.times(1)).updateParking(any());
+        verify(ticketDAO, Mockito.times(1)).saveTicket(any());
+        verify(ticketDAO, Mockito.times(1)).recurringUsers(any());
+    }
+
+    @Test
+    public void processIncomingVehicleTestCarNoSlotAvailableTest() {
+        when(inputReaderUtil.readSelection()).thenReturn(1);
+        when(parkingSpotDAO.getNextAvailableSlot(any())).thenReturn(0);
+
+        parkingService.processIncomingVehicle();
+
+        verify(parkingSpotDAO, Mockito.times(0)).updateParking(any());
+        verify(ticketDAO, Mockito.times(0)).saveTicket(any());
+        verify(ticketDAO, Mockito.times(0)).recurringUsers(any());
+    }
+
+
+    @Test
+    public void processIncomingVehicleTestCarIllegalArgumentTest() {
+        when(inputReaderUtil.readSelection()).thenReturn(3);
+        parkingService.processIncomingVehicle();
+
+        verify(parkingSpotDAO, Mockito.times(0)).updateParking(any());
+        verify(ticketDAO, Mockito.times(0)).saveTicket(any());
+        verify(ticketDAO, Mockito.times(0)).recurringUsers(any());
+    }
+
+    @Test
+    public void processIncomingVehicleTestBikeTest() {
+        when(inputReaderUtil.readSelection()).thenReturn(2);
+        when(parkingSpotDAO.getNextAvailableSlot(any())).thenReturn(1);
+        when(ticketDAO.saveTicket(any())).thenReturn(true);
+        when(ticketDAO.recurringUsers(any())).thenReturn(false);
+
+        parkingService.processIncomingVehicle();
+
+        verify(parkingSpotDAO, Mockito.times(1)).updateParking(any());
+        verify(ticketDAO, Mockito.times(1)).saveTicket(any());
+        verify(ticketDAO, Mockito.times(1)).recurringUsers(any());
+
+    }
+
+    @Test
+    public void processExitingVehicleTest() {
         parkingService.processExitingVehicle();
         verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
     }
+
+    @Test public void processExitingVehicleUpdateTicketFailTest() {
+        when(ticketDAO.updateTicket(any())).thenReturn(false);
+
+        parkingService.processExitingVehicle();
+
+        verify(parkingSpotDAO, Mockito.times(0)).updateParking(any(ParkingSpot.class));
+    }
+
 
 }
