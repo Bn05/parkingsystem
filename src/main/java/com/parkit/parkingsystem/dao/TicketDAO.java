@@ -18,9 +18,10 @@ public class TicketDAO {
 
     public boolean saveTicket(Ticket ticket) {
         Connection con = null;
+        PreparedStatement ps = null;
         try {
             con = dataBaseConfig.getConnection();
-            PreparedStatement ps = con.prepareStatement(DBConstants.SAVE_TICKET);
+            ps = con.prepareStatement(DBConstants.SAVE_TICKET);
             ps.setInt(1, ticket.getParkingSpot().getId());
             ps.setString(2, ticket.getVehicleRegNumber());
             ps.setDouble(3, ticket.getPrice());
@@ -30,6 +31,7 @@ public class TicketDAO {
         } catch (Exception ex) {
             logger.error("Error fetching next available slot", ex);
         } finally {
+            dataBaseConfig.closePreparedStatement(ps);
             dataBaseConfig.closeConnection(con);
         }
         return false;
@@ -38,12 +40,14 @@ public class TicketDAO {
     public Ticket getTicket(String vehicleRegNumber) {
         Connection con = null;
         Ticket ticket = null;
+        ResultSet rs = null;
+        PreparedStatement ps = null;
         try {
             con = dataBaseConfig.getConnection();
-            PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET);
+            ps = con.prepareStatement(DBConstants.GET_TICKET);
             //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
             ps.setString(1, vehicleRegNumber);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             if (rs.next()) {
                 ticket = new Ticket();
                 ParkingSpot parkingSpot = new ParkingSpot(rs.getInt(1), ParkingType.valueOf(rs.getString(6)), false);
@@ -61,45 +65,53 @@ public class TicketDAO {
         } finally {
             dataBaseConfig.closeConnection(con);
         }
+        dataBaseConfig.closeResultSet(rs);
+        dataBaseConfig.closePreparedStatement(ps);
         return ticket;
     }
 
     public boolean updateTicket(Ticket ticket) {
         Connection con = null;
+        PreparedStatement ps = null;
         try {
             con = dataBaseConfig.getConnection();
-            PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_TICKET);
+            ps = con.prepareStatement(DBConstants.UPDATE_TICKET);
             ps.setDouble(1, ticket.getPrice());
             ps.setTimestamp(2, new Timestamp(ticket.getOutTime().getTime()));
             ps.setInt(3, ticket.getId());
             ps.execute();
+            dataBaseConfig.closePreparedStatement(ps);
             return true;
         } catch (Exception ex) {
             logger.error("Error saving ticket info", ex);
         } finally {
             dataBaseConfig.closeConnection(con);
         }
+
+        dataBaseConfig.closePreparedStatement(ps);
         return false;
     }
 
     public boolean recurringUsers(String VehichleRegNumber) {
         Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        boolean result = false;
         try {
             con = dataBaseConfig.getConnection();
-            PreparedStatement ps = con.prepareStatement(DBConstants.COUNT_PASSAGE);
+            ps = con.prepareStatement(DBConstants.COUNT_PASSAGE);
             ps.setString(1, VehichleRegNumber);
-            ResultSet rs = ps.executeQuery();
-
+            rs = ps.executeQuery();
             if (rs.next()) {
-                return rs.getInt(1) > 1;
+                result = rs.getInt(1) > 1;
             }
-            dataBaseConfig.closeResultSet(rs);
-            dataBaseConfig.closePreparedStatement(ps);
-        } catch (Exception e) {
-            logger.error("Error Recurring Users", e);
+        } catch (Exception ex) {
+            logger.error("Error Recurring Users", ex);
+        } finally {
+            dataBaseConfig.closeConnection(con);
         }
-        return false;
+        dataBaseConfig.closeResultSet(rs);
+        dataBaseConfig.closePreparedStatement(ps);
+        return result;
     }
-
-
 }

@@ -13,6 +13,13 @@ public class ParkingSpot {
         this.isAvailable = isAvailable;
     }
 
+    public ParkingSpot(ParkingSpot parkingSpot) {
+        this.number = parkingSpot.number;
+        this.parkingType = parkingSpot.parkingType;
+        this.isAvailable = parkingSpot.isAvailable;
+
+    }
+
     public int getId() {
         return number;
     }

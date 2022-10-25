@@ -43,8 +43,7 @@ public class ParkingService {
                 ticket.setPrice(0);
                 ticket.setInTime(inTime);
                 ticket.setOutTime(null);
-                if(!ticketDAO.saveTicket(ticket))
-                {
+                if (!ticketDAO.saveTicket(ticket)) {
                     throw new Exception("Save Ticket Fail !");
                 }
 
@@ -60,7 +59,7 @@ public class ParkingService {
         }
     }
 
-    private String getVehichleRegNumber(){
+    private String getVehichleRegNumber() {
         System.out.println("Please type the vehicle registration number and press enter key");
         return inputReaderUtil.readVehicleRegistrationNumber();
     }
