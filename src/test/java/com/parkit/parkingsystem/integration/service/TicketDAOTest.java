@@ -67,7 +67,7 @@ public class TicketDAOTest {
 
         boolean test = ticketDAO.saveTicket(ticket);
 
-        assertFalse(test);
+        assertTrue(test);
 
         Ticket ticketSave = ticketDAO.getTicket("ABCDE");
 

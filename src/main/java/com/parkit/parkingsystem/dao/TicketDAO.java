@@ -34,7 +34,7 @@ public class TicketDAO {
             dataBaseConfig.closePreparedStatement(ps);
             dataBaseConfig.closeConnection(con);
         }
-        return false;
+        return true;
     }
 
     public Ticket getTicket(String vehicleRegNumber) {

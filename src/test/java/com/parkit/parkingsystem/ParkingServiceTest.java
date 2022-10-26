@@ -62,7 +62,7 @@ class ParkingServiceTest {
 
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(parkingSpotDAO.getNextAvailableSlot(any())).thenReturn(1);
-        when(ticketDAO.saveTicket(any())).thenReturn(true);
+        when(ticketDAO.saveTicket(any())).thenReturn(false);
         when(ticketDAO.recurringUsers(any())).thenReturn(false);
 
         parkingService.processIncomingVehicle();
@@ -76,7 +76,7 @@ class ParkingServiceTest {
     void processIncomingVehicleTestCarTicketSaveFailTest() {
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(parkingSpotDAO.getNextAvailableSlot(any())).thenReturn(1);
-        when(ticketDAO.saveTicket(any())).thenReturn(false);
+        when(ticketDAO.saveTicket(any())).thenReturn(true);
 
 
         parkingService.processIncomingVehicle();
@@ -90,7 +90,7 @@ class ParkingServiceTest {
     void processIncomingVehicleTestCarRecurringUserTest() {
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(parkingSpotDAO.getNextAvailableSlot(any())).thenReturn(1);
-        when(ticketDAO.saveTicket(any())).thenReturn(true);
+        when(ticketDAO.saveTicket(any())).thenReturn(false);
         when(ticketDAO.recurringUsers(any())).thenReturn(true);
 
         parkingService.processIncomingVehicle();
@@ -127,7 +127,7 @@ class ParkingServiceTest {
     void processIncomingVehicleTestBikeTest() {
         when(inputReaderUtil.readSelection()).thenReturn(2);
         when(parkingSpotDAO.getNextAvailableSlot(any())).thenReturn(1);
-        when(ticketDAO.saveTicket(any())).thenReturn(true);
+        when(ticketDAO.saveTicket(any())).thenReturn(false);
         when(ticketDAO.recurringUsers(any())).thenReturn(false);
 
         parkingService.processIncomingVehicle();
